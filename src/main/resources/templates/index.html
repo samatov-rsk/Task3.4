@@ -1,11 +1,43 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/html">
 <head>
-    <title>Spring Security Example</title>
+    <meta charset="UTF-8">
+    <title>Index</title>
 </head>
 <body>
-<h1>Welcome to Index PAGE!</h1>
+<table th:border="1">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Surname</th>
+        <th scope="col">Email</th>
+        <th scope="col">Action</th>
+        <th scope="col">Action</th>
+    </tr>
+    <tr th:each="user:${users}">
+        <td><a th:href="@{/users/{id}(id=${user.getId()})}" th:text="${user.Id}">UserId</a></td>
+        <td th:text="${user.name}">Name</td>
+        <td th:text="${user.surname}">Surname</td>
+        <td th:text="${user.email}">Email</td>
+        <td>
+            <form th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+                <input type="submit" class="buttonEdit" value="Edit"/>
+            </form>
+        </td>
+        <td>
+            <form th:method="DELETE" th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+                <input type="submit" class="buttonDelete" value="Delete"/>
+            </form>
+        </td>
+    </tr>
+</table>
 
+<br/>
+<hr/>
+    <a href="/users/new">Create new Users</a>
 
+<br/>
+    <p><a href="/logout" target="self">Logout</a></p>
 </body>
 </html>
