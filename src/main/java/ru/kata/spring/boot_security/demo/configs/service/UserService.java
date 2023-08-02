@@ -25,18 +25,18 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 mapRolesToAuthorities(user.getRoles()));
     }
 

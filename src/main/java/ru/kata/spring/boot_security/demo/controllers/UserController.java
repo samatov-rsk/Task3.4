@@ -10,7 +10,7 @@ import java.security.Principal;
 @Controller
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/user")
     public String showUser(Model model, Principal principal) {
-        model.addAttribute("user", userService.findByUsername(principal.getName()));
+        model.addAttribute("user", userService.findByEmail(principal.getName()));
         return "user";
     }
 }

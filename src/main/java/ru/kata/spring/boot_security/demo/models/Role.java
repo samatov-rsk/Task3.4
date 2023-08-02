@@ -12,6 +12,7 @@ import javax.persistence.Table;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     Long id;
 
     @Column(name = "name")
@@ -20,6 +21,11 @@ public class Role {
     public Role(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public Role() {

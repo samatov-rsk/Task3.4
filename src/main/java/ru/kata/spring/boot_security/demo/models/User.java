@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.models;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.CascadeType;
@@ -26,7 +25,7 @@ public class User {
     @Column(name = "id")
     Long id;
 
-    @Column(name = "name")
+    @Column(name = "username")
     String username;
 
     @Column(name = "surname")
@@ -35,21 +34,26 @@ public class User {
     @Column(name = "email")
     String email;
 
+    @Column(name = "age")
+    int age;
+
     @Column(name = "password")
     String password;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<Role> roles;
 
-    public User(Long id, String username, String surname, String email, String password) {
+    public User(Long id, String username, String surname, int age, String email, String password, Collection<Role> roles) {
         this.id = id;
         this.username = username;
         this.surname = surname;
+        this.age = age;
         this.email = email;
         this.password = password;
+        this.roles = roles;
     }
 
     public User() {
@@ -87,6 +91,14 @@ public class User {
         this.surname = surname;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -101,5 +113,18 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }
