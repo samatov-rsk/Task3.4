@@ -40,7 +40,7 @@ public class DaoServiceImpl implements DaoService {
     }
 
     @Override
-    public void updateUser(long id, User user) {
+    public void updateUser(Long id, User user) {
         userDao.updateUser(id, user);
     }
 }

@@ -3,49 +3,65 @@ package ru.kata.spring.boot_security.demo.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositiories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositiories.UserRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
 public class UserDaoImpl implements UserDao {
 
-    @PersistenceContext
-    EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserDaoImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public UserDaoImpl(UserRepository repository, RoleRepository roleRepository) {
+        this.userRepository = repository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public List<User> getAllUsers() {
-        String jpql = "select u from User u";
-        TypedQuery<User> query = entityManager.createQuery(jpql, User.class);
-        return query.getResultList();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(long id) {
-        return entityManager.find(User.class, id);
+        return userRepository.findById(id).orElseThrow();
     }
 
     @Override
     public void addUser(User user) {
-        entityManager.merge(user);
+        List<Role> userRoles = roleRepository.findAllByNameIn(user.getRoles()
+                .stream().map(Role::getName).collect(Collectors.toList()));
+        user.setRoles(userRoles);
+        userRepository.save(user);
     }
 
     @Override
     public void removeUser(long id) {
-        entityManager.remove(getUserById(id));
+        userRepository.delete(userRepository.getById(id));
     }
 
     @Override
-    public void updateUser(long id, User user) {
-        entityManager.merge(user);
+    public void updateUser(Long id, User updatedUser) {
+        User existingUser = getUserById(id);
+
+        existingUser.setName(updatedUser.getName());
+        existingUser.setSurname(updatedUser.getSurname());
+        existingUser.setAge(updatedUser.getAge());
+        existingUser.setEmail(updatedUser.getEmail());
+        List<Role> existingRoles = roleRepository.findAllByNameIn(
+                updatedUser.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toList())
+        );
+        existingUser.setRoles(existingRoles);
+        userRepository.save(existingUser);
     }
+
 }

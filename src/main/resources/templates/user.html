@@ -19,9 +19,11 @@
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a href="#" class="navbar-brand d-flex"><strong><p th:text="${user.getEmail()}">Id</p></strong>
+            <a href="#" class="navbar-brand d-flex">
+                <strong><p th:text="${userEmail}">Email пользователя</p></strong>
                 <p> &nbspwith roles:&nbsp</p>
-            <p th:text="${user.getRoles()}">Roles</p></a>
+                <p th:text="${userRoles}">Роль пользователя</p>
+            </a>
         </div>
         <form action="/logout" target="_blank">
             <button type="submit" class="btn btn-dark">Logout</button>
@@ -55,15 +57,7 @@
                                 <th scope="col">Role</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td th:text="${user.getId()}">Id</td>
-                                <td th:text="${user.getName()}">Name</td>
-                                <td th:text="${user.getSurname()}">Surname</td>
-                                <td th:text="${user.getAge()}">Age</td>
-                                <td th:text="${user.getEmail()}">Email</td>
-                                <td th:text="${user.getRoles()}">Roles</td>
-                            </tr>
+                            <tbody id="user-table-body-user">
                             </tbody>
                         </table>
                     </div>
@@ -72,5 +66,33 @@
         </div>
     </div>
 </div>
+<script>
+    function loadUserData() {
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(user => {
+                const tableBody = document.getElementById('user-table-body-user');
+                tableBody.innerHTML = '';
+
+                const rolesArray = user.roles.map(role => role.name);
+                const rolesString = rolesArray.join(', ');
+
+                const userRow = document.createElement('tr');
+
+                userRow.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.name}</td>
+                <td>${user.surname}</td>
+                <td>${user.age}</td>
+                <td>${user.email}</td>
+                <td>${rolesString}</td>
+            `;
+                tableBody.appendChild(userRow);
+            });
+    }
+
+    loadUserData();
+
+</script>
 </body>
 </html>

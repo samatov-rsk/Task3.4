@@ -10,8 +10,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class Role {
-    @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "id")
     Long id;
 
@@ -46,4 +47,6 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
 }
+

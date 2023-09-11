@@ -13,19 +13,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.Collection;
+import java.util.List;
 
 @Component
 @Entity
 @Table(name = "users")
 public class User {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "id")
     Long id;
 
-    @Column(name = "username")
+    @Column(name = "name")
     String username;
 
     @Column(name = "surname")
@@ -40,13 +40,13 @@ public class User {
     @Column(name = "password")
     String password;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private List<Role> roles;
 
-    public User(Long id, String username, String surname, int age, String email, String password, Collection<Role> roles) {
+    public User(Long id, String username, String surname, int age, String email, String password, List<Role> roles) {
         this.id = id;
         this.username = username;
         this.surname = surname;
@@ -71,11 +71,11 @@ public class User {
         return username;
     }
 
-    public Collection<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
